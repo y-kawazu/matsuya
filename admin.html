@@ -1,0 +1,748 @@
+﻿<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>管理ページ | 株式会社松屋製作所</title>
+  <style>
+    :root {
+      --ink: #191715;
+      --muted: #6d6b66;
+      --line: #dfd8ce;
+      --paper: #fbfaf7;
+      --soft: #f2eee7;
+      --accent: #b9942a;
+      --green: #68756d;
+      --white: #ffffff;
+      --danger: #9e342e;
+      --shadow: 0 18px 46px rgba(34, 29, 22, 0.13);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--paper);
+      font-family: "Hiragino Kaku Gothic ProN", "Yu Gothic", Meiryo, Arial, sans-serif;
+      line-height: 1.65;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    button, input, textarea, select { font: inherit; }
+
+    .login-view {
+      display: grid;
+      min-height: 100svh;
+      padding: 28px;
+      place-items: center;
+      background:
+        linear-gradient(90deg, rgba(18, 15, 12, 0.88), rgba(18, 15, 12, 0.58)),
+        url("assets/about-bg.jpg") center / cover no-repeat;
+    }
+
+    .login-panel {
+      width: min(430px, 100%);
+      padding: 34px;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 8px;
+      background: rgba(251, 250, 247, 0.94);
+      box-shadow: var(--shadow);
+    }
+
+    .login-panel img {
+      width: 142px;
+      margin-bottom: 26px;
+    }
+
+    .login-panel h1,
+    .admin-title h1 {
+      margin: 0;
+      font-family: "Yu Mincho", "Hiragino Mincho ProN", serif;
+      font-weight: 600;
+      line-height: 1.3;
+    }
+
+    .login-panel p,
+    .admin-title p {
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .field {
+      display: grid;
+      gap: 7px;
+      margin-top: 16px;
+    }
+
+    label {
+      color: var(--green);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    input,
+    textarea,
+    select {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--white);
+      color: var(--ink);
+      padding: 10px 12px;
+      outline-color: var(--accent);
+    }
+
+    textarea {
+      min-height: 96px;
+      resize: vertical;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 42px;
+      padding: 10px 16px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--white);
+      color: var(--ink);
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    .button.primary {
+      border-color: var(--accent);
+      background: var(--accent);
+      color: var(--white);
+    }
+
+    .button.danger {
+      border-color: rgba(158, 52, 46, 0.28);
+      color: var(--danger);
+    }
+
+    .button.small {
+      min-height: 34px;
+      padding: 7px 10px;
+      font-size: 12px;
+    }
+
+    .login-actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      margin-top: 22px;
+    }
+
+    .error {
+      margin: 10px 0 0;
+      color: var(--danger);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .admin-app {
+      display: none;
+      min-height: 100svh;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      border-bottom: 1px solid rgba(25, 23, 21, 0.09);
+      background: rgba(251, 250, 247, 0.92);
+      backdrop-filter: blur(18px);
+    }
+
+    .topbar-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: min(1240px, calc(100% - 40px));
+      height: 72px;
+      margin: 0 auto;
+      gap: 18px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      min-width: 0;
+    }
+
+    .brand img {
+      width: 126px;
+    }
+
+    .brand span {
+      color: var(--muted);
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .top-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .layout {
+      display: grid;
+      width: min(1240px, calc(100% - 40px));
+      margin: 0 auto;
+      padding: 34px 0 70px;
+      gap: 28px;
+      grid-template-columns: 250px 1fr;
+    }
+
+    .side {
+      position: sticky;
+      top: 94px;
+      align-self: start;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--white);
+      overflow: hidden;
+    }
+
+    .side button {
+      display: flex;
+      width: 100%;
+      justify-content: space-between;
+      border: 0;
+      border-bottom: 1px solid var(--line);
+      background: transparent;
+      padding: 14px 16px;
+      cursor: pointer;
+      color: var(--muted);
+      font-weight: 700;
+      text-align: left;
+    }
+
+    .side button:last-child { border-bottom: 0; }
+    .side button.active { color: var(--ink); background: var(--soft); }
+
+    .main {
+      display: grid;
+      gap: 22px;
+    }
+
+    .admin-title {
+      padding: 26px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--white);
+    }
+
+    .panel {
+      display: none;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--white);
+      overflow: hidden;
+    }
+
+    .panel.active { display: block; }
+
+    .panel-head {
+      padding: 20px 22px;
+      border-bottom: 1px solid var(--line);
+      background: #fffdf9;
+    }
+
+    .panel-head h2 {
+      margin: 0;
+      font-size: 20px;
+    }
+
+    .panel-body {
+      display: grid;
+      gap: 18px;
+      padding: 22px;
+    }
+
+    .grid-2 {
+      display: grid;
+      gap: 16px;
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .grid-3 {
+      display: grid;
+      gap: 16px;
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .editor-card {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--paper);
+      overflow: hidden;
+    }
+
+    .editor-card-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 13px 15px;
+      border-bottom: 1px solid var(--line);
+      background: var(--soft);
+    }
+
+    .editor-card-head strong {
+      font-size: 14px;
+    }
+
+    .editor-card-body {
+      display: grid;
+      gap: 14px;
+      padding: 15px;
+    }
+
+    .image-input {
+      display: grid;
+      gap: 10px;
+      grid-template-columns: 1fr auto;
+      align-items: end;
+    }
+
+    .image-preview {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--soft) center / cover no-repeat;
+    }
+
+    .status {
+      display: none;
+      padding: 12px 14px;
+      border: 1px solid rgba(185, 148, 42, 0.42);
+      border-radius: 8px;
+      background: #fff8e4;
+      color: #6d520e;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .status.show { display: block; }
+
+    @media (max-width: 900px) {
+      .brand span { display: none; }
+      .topbar-inner,
+      .layout { width: calc(100% - 28px); }
+      .layout { grid-template-columns: 1fr; }
+      .side {
+        position: static;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .side button { border-right: 1px solid var(--line); }
+      .grid-2,
+      .grid-3 { grid-template-columns: 1fr; }
+      .top-actions { flex-wrap: wrap; justify-content: end; }
+    }
+  </style>
+</head>
+<body>
+  <div class="login-view" id="loginView">
+    <form class="login-panel" id="loginForm">
+      <img src="assets/logo.png" alt="Matsuya">
+      <h1>管理ページ</h1>
+      <p>サイトの文章、画像、施工事例、NEWSを編集します。</p>
+      <div class="field">
+        <label for="password">PASSWORD</label>
+        <input id="password" type="password" autocomplete="current-password" placeholder="パスワード">
+      </div>
+      <p class="error" id="loginError"></p>
+      <div class="login-actions">
+        <a class="button" href="index.html">プレビューへ戻る</a>
+        <button class="button primary" type="submit">ログイン</button>
+      </div>
+    </form>
+  </div>
+
+  <div class="admin-app" id="adminApp">
+    <header class="topbar">
+      <div class="topbar-inner">
+        <a class="brand" href="index.html">
+          <img id="adminLogo" src="assets/logo.png" alt="Matsuya">
+          <span>店舗デザイン・企画・施工・特注家具製作</span>
+        </a>
+        <div class="top-actions">
+          <a class="button" href="index.html">サイト確認</a>
+          <button class="button" type="button" id="resetButton">初期化</button>
+          <button class="button primary" type="button" id="saveButton">保存</button>
+        </div>
+      </div>
+    </header>
+
+    <div class="layout">
+      <nav class="side" aria-label="管理メニュー">
+        <button class="active" type="button" data-panel="basic">基本</button>
+        <button type="button" data-panel="hero">ヒーロー</button>
+        <button type="button" data-panel="work">施工事例</button>
+        <button type="button" data-panel="news">NEWS</button>
+        <button type="button" data-panel="about">ABOUT</button>
+        <button type="button" data-panel="contact">CONTACT</button>
+      </nav>
+
+      <main class="main">
+        <section class="admin-title">
+          <h1>松屋製作所 サイト管理</h1>
+          <p>保存した内容はこのブラウザのプレビューに反映されます。</p>
+        </section>
+        <div class="status" id="status">保存しました。</div>
+
+        <section class="panel active" id="panel-basic">
+          <div class="panel-head"><h2>基本情報</h2></div>
+          <div class="panel-body">
+            <div class="grid-2">
+              <div class="field">
+                <label for="headerLogo">ロゴ画像</label>
+                <input id="headerLogo" data-path="header.logo">
+              </div>
+              <div class="field">
+                <label for="headerTagline">ヘッダー説明</label>
+                <input id="headerTagline" data-path="header.tagline">
+              </div>
+            </div>
+            <div class="image-input">
+              <div class="field">
+                <label for="logoFile">ロゴ画像アップロード</label>
+                <input id="logoFile" type="file" accept="image/*" data-image-target="header.logo">
+              </div>
+              <button class="button small" type="button" data-pick-file="logoFile">選択</button>
+            </div>
+            <div class="image-preview" id="logoPreview"></div>
+          </div>
+        </section>
+
+        <section class="panel" id="panel-hero">
+          <div class="panel-head"><h2>ヒーロー</h2></div>
+          <div class="panel-body">
+            <div class="grid-2">
+              <div class="field"><label>英字コピー</label><input data-path="hero.eyebrow"></div>
+              <div class="field"><label>見出し前コピー</label><input data-path="hero.statement"></div>
+            </div>
+            <div class="field"><label>大見出し</label><input data-path="hero.title"></div>
+            <div class="field"><label>本文</label><textarea data-path="hero.copy"></textarea></div>
+            <div class="field"><label>トップヒーロー メインコピー</label><textarea data-path="hero.mainCopy"></textarea></div>
+            <div class="field"><label>トップヒーロー サブコピー</label><textarea data-path="hero.subCopy"></textarea></div>
+            <div class="field"><label>背景画像</label><input data-path="hero.image"></div>
+            <input type="file" accept="image/*" data-image-target="hero.image">
+            <div class="image-preview" id="heroPreview"></div>
+            <div class="field"><label>施工スライド画像（1行に1枚の画像URL）</label><textarea id="heroSlides"></textarea></div>
+            <div class="grid-3" id="metaEditor"></div>
+          </div>
+        </section>
+
+        <section class="panel" id="panel-work">
+          <div class="panel-head"><h2>施工事例</h2></div>
+          <div class="panel-body">
+            <div class="grid-2">
+              <div class="field"><label>セクション見出し</label><input data-path="workIntro.title"></div>
+              <div class="field"><label>ラベル</label><input data-path="workIntro.label"></div>
+            </div>
+            <div class="field"><label>説明文</label><textarea data-path="workIntro.lead"></textarea></div>
+            <div id="worksEditor"></div>
+            <button class="button" type="button" id="addWork">施工事例を追加</button>
+          </div>
+        </section>
+
+        <section class="panel" id="panel-news">
+          <div class="panel-head"><h2>NEWS</h2></div>
+          <div class="panel-body">
+            <div class="grid-2">
+              <div class="field"><label>セクション見出し</label><input data-path="newsIntro.title"></div>
+              <div class="field"><label>ラベル</label><input data-path="newsIntro.label"></div>
+            </div>
+            <div class="field"><label>説明文</label><textarea data-path="newsIntro.lead"></textarea></div>
+            <div id="newsEditor"></div>
+            <button class="button" type="button" id="addNews">NEWSを追加</button>
+          </div>
+        </section>
+
+        <section class="panel" id="panel-about">
+          <div class="panel-head"><h2>ABOUT</h2></div>
+          <div class="panel-body">
+            <div class="grid-2">
+              <div class="field"><label>ラベル</label><input data-path="about.label"></div>
+              <div class="field"><label>画像</label><input data-path="about.image"></div>
+            </div>
+            <input type="file" accept="image/*" data-image-target="about.image">
+            <div class="image-preview" id="aboutPreview"></div>
+            <div class="field"><label>見出し</label><textarea data-path="about.title"></textarea></div>
+            <div class="field"><label>本文</label><textarea data-path="about.lead"></textarea></div>
+            <div id="servicesEditor"></div>
+            <button class="button" type="button" id="addService">サービス項目を追加</button>
+          </div>
+        </section>
+
+        <section class="panel" id="panel-contact">
+          <div class="panel-head"><h2>CONTACT / FOOTER</h2></div>
+          <div class="panel-body">
+            <div class="grid-2">
+              <div class="field"><label>CONTACTラベル</label><input data-path="contact.label"></div>
+              <div class="field"><label>メールアドレス</label><input data-path="contact.email"></div>
+            </div>
+            <div class="field"><label>CONTACT見出し</label><input data-path="contact.title"></div>
+            <div class="field"><label>住所表記</label><textarea data-path="contact.address"></textarea></div>
+            <div class="grid-2">
+              <div class="field"><label>フッター会社名</label><input data-path="footer.company"></div>
+              <div class="field"><label>フッター説明</label><input data-path="footer.description"></div>
+            </div>
+            <div class="grid-2">
+              <div class="field"><label>事務所情報</label><textarea data-path="footer.office"></textarea></div>
+              <div class="field"><label>営業時間</label><textarea data-path="footer.hours"></textarea></div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <script src="site-data.js?v=5"></script>
+  <script>
+    const PASSWORD = "matsuya1953";
+    let siteData = window.MatsuyaContent.loadSiteData();
+    const loginView = document.querySelector("#loginView");
+    const adminApp = document.querySelector("#adminApp");
+
+    function getValue(path) {
+      return path.split(".").reduce((value, key) => value[key], siteData);
+    }
+
+    function setValue(path, value) {
+      const keys = path.split(".");
+      const last = keys.pop();
+      const target = keys.reduce((current, key) => current[key], siteData);
+      target[last] = value;
+    }
+
+    function syncFields() {
+      document.querySelectorAll("[data-path]").forEach((field) => {
+        field.value = getValue(field.dataset.path) || "";
+      });
+      document.querySelector("#adminLogo").src = siteData.header.logo;
+      document.querySelector("#logoPreview").style.backgroundImage = `url("${siteData.header.logo}")`;
+      document.querySelector("#heroPreview").style.backgroundImage = `url("${siteData.hero.image}")`;
+      document.querySelector("#heroSlides").value = (siteData.hero.slides || []).join("\n");
+      document.querySelector("#aboutPreview").style.backgroundImage = `url("${siteData.about.image}")`;
+      renderMetaEditor();
+      renderWorksEditor();
+      renderNewsEditor();
+      renderServicesEditor();
+    }
+
+    function renderMetaEditor() {
+      document.querySelector("#metaEditor").innerHTML = siteData.meta.map((item, index) => `
+        <div class="editor-card">
+          <div class="editor-card-head"><strong>対応領域 ${index + 1}</strong></div>
+          <div class="editor-card-body">
+            <div class="field"><label>ラベル</label><input data-meta="${index}" data-key="label" value="${item.label}"></div>
+            <div class="field"><label>表示文</label><input data-meta="${index}" data-key="text" value="${item.text}"></div>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    function renderWorksEditor() {
+      document.querySelector("#worksEditor").innerHTML = siteData.works.map((work, index) => `
+        <article class="editor-card">
+          <div class="editor-card-head">
+            <strong>${work.title || "新規施工事例"}</strong>
+            <button class="button small danger" type="button" data-remove-work="${index}">削除</button>
+          </div>
+          <div class="editor-card-body">
+            <div class="grid-3">
+              <div class="field"><label>ID</label><input data-work="${index}" data-key="id" value="${work.id}"></div>
+              <div class="field"><label>カテゴリ</label><input data-work="${index}" data-key="category" value="${work.category}"></div>
+              <div class="field"><label>大きく表示</label><select data-work="${index}" data-key="featured"><option value="false">通常</option><option value="true" ${work.featured ? "selected" : ""}>大きく表示</option></select></div>
+            </div>
+            <div class="field"><label>現場名</label><input data-work="${index}" data-key="title" value="${work.title}"></div>
+            <div class="field"><label>説明</label><textarea data-work="${index}" data-key="summary">${work.summary}</textarea></div>
+            <div class="field"><label>メイン画像</label><input data-work="${index}" data-key="image" value="${work.image}"></div>
+            <input type="file" accept="image/*" data-work-image="${index}">
+            <div class="image-preview" style="background-image:url('${work.image}')"></div>
+            <div class="field"><label>現場写真ギャラリー（1行に1枚の画像URL）</label><textarea data-work-gallery="${index}">${(work.gallery || []).join("\n")}</textarea></div>
+            <input type="file" accept="image/*" multiple data-work-gallery-files="${index}">
+          </div>
+        </article>
+      `).join("");
+    }
+
+    function renderNewsEditor() {
+      document.querySelector("#newsEditor").innerHTML = siteData.news.map((item, index) => `
+        <article class="editor-card">
+          <div class="editor-card-head">
+            <strong>${item.title || "新規NEWS"}</strong>
+            <button class="button small danger" type="button" data-remove-news="${index}">削除</button>
+          </div>
+          <div class="editor-card-body">
+            <div class="grid-3">
+              <div class="field"><label>日付</label><input data-news="${index}" data-key="date" value="${item.date}"></div>
+              <div class="field"><label>分類</label><input data-news="${index}" data-key="tag" value="${item.tag}"></div>
+              <div class="field"><label>リンク</label><input data-news="${index}" data-key="href" value="${item.href}"></div>
+            </div>
+            <div class="field"><label>タイトル</label><input data-news="${index}" data-key="title" value="${item.title}"></div>
+            <div class="field"><label>本文</label><textarea data-news="${index}" data-key="body">${item.body || ""}</textarea></div>
+          </div>
+        </article>
+      `).join("");
+    }
+
+    function renderServicesEditor() {
+      document.querySelector("#servicesEditor").innerHTML = siteData.about.services.map((service, index) => `
+        <div class="editor-card">
+          <div class="editor-card-head">
+            <strong>サービス ${index + 1}</strong>
+            <button class="button small danger" type="button" data-remove-service="${index}">削除</button>
+          </div>
+          <div class="editor-card-body">
+            <div class="field"><label>項目名</label><input data-service="${index}" value="${service}"></div>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    function showAdmin() {
+      loginView.style.display = "none";
+      adminApp.style.display = "block";
+      syncFields();
+    }
+
+    if (sessionStorage.getItem("matsuya_admin_unlocked") === "1") {
+      showAdmin();
+    }
+
+    document.querySelector("#loginForm").addEventListener("submit", (event) => {
+      event.preventDefault();
+      if (document.querySelector("#password").value === PASSWORD) {
+        sessionStorage.setItem("matsuya_admin_unlocked", "1");
+        showAdmin();
+        return;
+      }
+      document.querySelector("#loginError").textContent = "パスワードが違います。";
+    });
+
+    document.querySelectorAll(".side button").forEach((button) => {
+      button.addEventListener("click", () => {
+        document.querySelectorAll(".side button").forEach((item) => item.classList.remove("active"));
+        document.querySelectorAll(".panel").forEach((panel) => panel.classList.remove("active"));
+        button.classList.add("active");
+        document.querySelector(`#panel-${button.dataset.panel}`).classList.add("active");
+      });
+    });
+
+    document.addEventListener("input", (event) => {
+      const target = event.target;
+      if (target.dataset.path) setValue(target.dataset.path, target.value);
+      if (target.id === "heroSlides") {
+        siteData.hero.slides = target.value.split(/\r?\n/).map((item) => item.trim()).filter(Boolean);
+      }
+      if (target.dataset.meta) siteData.meta[Number(target.dataset.meta)][target.dataset.key] = target.value;
+      if (target.dataset.work) {
+        const value = target.dataset.key === "featured" ? target.value === "true" : target.value;
+        siteData.works[Number(target.dataset.work)][target.dataset.key] = value;
+      }
+      if (target.dataset.workGallery) {
+        siteData.works[Number(target.dataset.workGallery)].gallery = target.value.split(/\r?\n/).map((item) => item.trim()).filter(Boolean);
+      }
+      if (target.dataset.news) siteData.news[Number(target.dataset.news)][target.dataset.key] = target.value;
+      if (target.dataset.service) siteData.about.services[Number(target.dataset.service)] = target.value;
+    });
+
+    document.addEventListener("change", (event) => {
+      const target = event.target;
+      const files = Array.from(target.files || []);
+      if (!files.length) return;
+
+      Promise.all(files.map((file) => new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.readAsDataURL(file);
+      }))).then((results) => {
+        if (target.dataset.imageTarget) setValue(target.dataset.imageTarget, results[0]);
+        if (target.dataset.workImage) {
+          const work = siteData.works[Number(target.dataset.workImage)];
+          work.image = results[0];
+          work.gallery = [results[0], ...(work.gallery || []).slice(1)];
+        }
+        if (target.dataset.workGalleryFiles) {
+          const work = siteData.works[Number(target.dataset.workGalleryFiles)];
+          work.gallery = [...(work.gallery || []), ...results];
+        }
+        syncFields();
+      });
+    });
+
+    document.addEventListener("click", (event) => {
+      const target = event.target;
+      if (target.dataset.pickFile) document.querySelector(`#${target.dataset.pickFile}`).click();
+      if (target.dataset.removeWork) {
+        siteData.works.splice(Number(target.dataset.removeWork), 1);
+        renderWorksEditor();
+      }
+      if (target.dataset.removeNews) {
+        siteData.news.splice(Number(target.dataset.removeNews), 1);
+        renderNewsEditor();
+      }
+      if (target.dataset.removeService) {
+        siteData.about.services.splice(Number(target.dataset.removeService), 1);
+        renderServicesEditor();
+      }
+    });
+
+    document.querySelector("#addWork").addEventListener("click", () => {
+      const id = `work-${Date.now()}`;
+      siteData.works.push({
+        id,
+        title: "新しい施工事例",
+        category: "未分類",
+        summary: "施工事例の説明を入力してください。",
+        image: "assets/work-office.jpg",
+        featured: false,
+        gallery: ["assets/work-office.jpg", "assets/work-potama.jpg", "assets/work-soba.jpg"]
+      });
+      renderWorksEditor();
+    });
+
+    document.querySelector("#addNews").addEventListener("click", () => {
+      siteData.news.unshift({
+        id: `news-${Date.now()}`,
+        date: new Date().toISOString().slice(0, 10).replace(/-/g, "."),
+        tag: "お知らせ",
+        title: "新しいお知らせ",
+        href: "",
+        body: "お知らせの本文を入力してください。"
+      });
+      renderNewsEditor();
+    });
+
+    document.querySelector("#addService").addEventListener("click", () => {
+      siteData.about.services.push("新しいサービス項目");
+      renderServicesEditor();
+    });
+
+    document.querySelector("#saveButton").addEventListener("click", () => {
+      window.MatsuyaContent.saveSiteData(siteData);
+      const status = document.querySelector("#status");
+      status.classList.add("show");
+      setTimeout(() => status.classList.remove("show"), 1800);
+    });
+
+    document.querySelector("#resetButton").addEventListener("click", () => {
+      window.MatsuyaContent.resetSiteData();
+      siteData = window.MatsuyaContent.loadSiteData();
+      syncFields();
+    });
+  </script>
+</body>
+</html>

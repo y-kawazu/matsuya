@@ -1,0 +1,715 @@
+﻿<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ABOUT US | 株式会社松屋製作所</title>
+  <style>
+    :root {
+      --ink: #191715;
+      --muted: #6d6b66;
+      --line: #dfd8ce;
+      --paper: #fbfaf7;
+      --soft: #f2eee7;
+      --accent: #b9942a;
+      --green: #68756d;
+      --white: #ffffff;
+      --shadow: 0 18px 46px rgba(34, 29, 22, 0.13);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--paper);
+      font-family: "Hiragino Kaku Gothic ProN", "Yu Gothic", Meiryo, Arial, sans-serif;
+      line-height: 1.75;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    img { display: block; max-width: 100%; }
+
+    .site-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 50;
+      width: 100%;
+      border-bottom: 1px solid rgba(25, 23, 21, 0.09);
+      background: rgba(251, 250, 247, 0.9);
+      backdrop-filter: blur(18px);
+    }
+
+    .header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: min(1180px, calc(100% - 40px));
+      height: 72px;
+      margin: 0 auto;
+      gap: 24px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      min-width: 0;
+    }
+
+    .brand img { width: 126px; }
+
+    .brand span {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      gap: 26px;
+      color: #2e2b27;
+      font-family: Montserrat, Arial, sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .nav a {
+      position: relative;
+      padding: 8px 0;
+    }
+
+    .nav a::after {
+      position: absolute;
+      right: 0;
+      bottom: 3px;
+      left: 0;
+      height: 1px;
+      background: var(--accent);
+      content: "";
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 180ms ease;
+    }
+
+    .nav a:hover::after,
+    .nav a.active::after {
+      transform: scaleX(1);
+    }
+
+    .menu-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      width: 42px;
+      height: 42px;
+      border: 1px solid rgba(25, 23, 21, 0.34);
+      border-radius: 8px;
+      background: #f7f3ec;
+      cursor: pointer;
+    }
+
+    .menu-button span,
+    .menu-button::before,
+    .menu-button::after {
+      position: absolute;
+      left: 11px;
+      width: 18px;
+      height: 2px;
+      border-radius: 999px;
+      background: var(--ink);
+      content: "";
+      transition: transform 180ms ease, opacity 180ms ease;
+    }
+
+    .menu-button span { top: 19px; }
+    .menu-button::before { top: 14px; }
+    .menu-button::after { top: 24px; }
+    .menu-button.is-open span { opacity: 0; }
+    .menu-button.is-open::before { transform: translateY(5px) rotate(45deg); }
+    .menu-button.is-open::after { transform: translateY(-5px) rotate(-45deg); }
+
+    .page-hero {
+      margin-top: 72px;
+      color: var(--white);
+      background:
+        linear-gradient(90deg, rgba(18, 15, 12, 0.86), rgba(18, 15, 12, 0.42)),
+        url("assets/about-bg.jpg") center / cover no-repeat;
+    }
+
+    .container {
+      width: min(1180px, calc(100% - 40px));
+      margin: 0 auto;
+    }
+
+    .hero-inner {
+      min-height: 390px;
+      padding: 92px 0 66px;
+      display: grid;
+      align-content: end;
+    }
+
+    .breadcrumb {
+      margin: 0 0 20px;
+      color: rgba(255, 255, 255, 0.72);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .label {
+      margin: 0 0 12px;
+      color: var(--accent);
+      font-family: Montserrat, Arial, sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    h1 {
+      margin: 0;
+      font-family: "Yu Mincho", "Hiragino Mincho ProN", serif;
+      font-size: 50px;
+      font-weight: 600;
+      line-height: 1.2;
+    }
+
+    .lead {
+      max-width: 700px;
+      margin: 18px 0 0;
+      color: rgba(255, 255, 255, 0.82);
+      font-size: 16px;
+    }
+
+    .content {
+      padding: 62px 0 94px;
+    }
+
+    .layout {
+      display: grid;
+      gap: 44px;
+      grid-template-columns: 250px 1fr;
+      align-items: start;
+    }
+
+    .subnav {
+      position: sticky;
+      top: 96px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      overflow: hidden;
+      background: var(--white);
+    }
+
+    .subnav a {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 15px 16px;
+      border-bottom: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .subnav a:last-child { border-bottom: 0; }
+    .subnav a.active { color: var(--ink); background: var(--soft); }
+
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--white);
+      overflow: hidden;
+    }
+
+    .panel-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 24px;
+      padding: 24px 26px;
+      border-bottom: 1px solid var(--line);
+      background: #fffdf9;
+    }
+
+    .panel-head h2 {
+      margin: 0;
+      font-family: "Yu Mincho", "Hiragino Mincho ProN", serif;
+      font-size: 31px;
+      font-weight: 600;
+      line-height: 1.35;
+    }
+
+    .panel-head p {
+      max-width: 420px;
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .panel-body {
+      padding: 26px;
+    }
+
+    .info-table {
+      display: grid;
+      border-top: 1px solid var(--line);
+    }
+
+    .info-row {
+      display: grid;
+      gap: 22px;
+      grid-template-columns: 180px 1fr;
+      padding: 18px 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .info-row dt {
+      color: var(--green);
+      font-weight: 700;
+    }
+
+    .info-row dd {
+      margin: 0;
+      font-weight: 700;
+    }
+
+    .statement {
+      max-width: 850px;
+      margin: 0;
+      font-family: "Yu Mincho", "Hiragino Mincho ProN", serif;
+      font-size: 30px;
+      line-height: 1.9;
+    }
+
+    .cards {
+      display: grid;
+      gap: 16px;
+      grid-template-columns: repeat(3, 1fr);
+      margin-top: 28px;
+    }
+
+    .card {
+      min-height: 150px;
+      padding: 20px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--paper);
+    }
+
+    .card b {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--accent);
+      font-family: Montserrat, Arial, sans-serif;
+      font-size: 12px;
+    }
+
+    .timeline {
+      display: grid;
+      border-top: 1px solid var(--line);
+    }
+
+    .timeline-item {
+      display: grid;
+      gap: 28px;
+      grid-template-columns: 150px 1fr;
+      padding: 20px 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .timeline-year {
+      color: var(--accent);
+      font-family: Montserrat, Arial, sans-serif;
+      font-weight: 700;
+    }
+
+    .timeline-text {
+      font-weight: 700;
+    }
+
+    .split {
+      display: grid;
+      gap: 24px;
+      grid-template-columns: 1fr 0.9fr;
+      align-items: start;
+    }
+
+    .note {
+      padding: 22px;
+      border-radius: 8px;
+      background: var(--soft);
+      color: var(--muted);
+    }
+
+    .map-box {
+      min-height: 320px;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      background:
+        linear-gradient(rgba(251, 250, 247, 0.85), rgba(251, 250, 247, 0.85)),
+        url("assets/about-bg.jpg") center / cover no-repeat;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      padding: 28px;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 46px;
+      margin-top: 24px;
+      padding: 12px 22px;
+      border: 1px solid var(--accent);
+      border-radius: 8px;
+      background: var(--accent);
+      color: var(--white);
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .site-footer {
+      padding: 54px 0 28px;
+      color: rgba(255, 255, 255, 0.75);
+      background: #191715;
+    }
+
+    .footer-grid {
+      display: grid;
+      gap: 32px;
+      grid-template-columns: 1.2fr repeat(3, 1fr);
+    }
+
+    .footer-grid img {
+      width: 132px;
+      filter: invert(1);
+    }
+
+    .footer-title {
+      margin: 0 0 14px;
+      color: var(--white);
+      font-family: Montserrat, Arial, sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .footer-grid p,
+    .footer-grid ul {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      font-size: 14px;
+    }
+
+    .copyright {
+      margin-top: 36px;
+      padding-top: 20px;
+      border-top: 1px solid rgba(255, 255, 255, 0.12);
+      font-size: 12px;
+    }
+
+    @media (min-width: 901px) {
+      .menu-button { display: none; }
+    }
+
+    @media (max-width: 900px) {
+      .brand span,
+      .nav { display: none; }
+
+      .nav.open {
+        position: absolute;
+        top: 72px;
+        right: 20px;
+        display: grid;
+        width: min(280px, calc(100% - 40px));
+        gap: 0;
+        padding: 10px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--paper);
+        box-shadow: var(--shadow);
+      }
+
+      .nav.open a { padding: 12px; }
+      .layout,
+      .split,
+      .cards,
+      .footer-grid { grid-template-columns: 1fr; }
+      .subnav { position: static; }
+      .panel-head { display: grid; }
+      h1 { font-size: 38px; }
+      .statement { font-size: 24px; }
+    }
+
+    @media (max-width: 560px) {
+      .header-inner,
+      .container { width: calc(100% - 28px); }
+      .hero-inner { min-height: 330px; padding: 62px 0 44px; }
+      h1 { font-size: 32px; }
+      .info-row,
+      .timeline-item { grid-template-columns: 1fr; gap: 6px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="index.html">
+        <img src="assets/logo.png" alt="Matsuya">
+        <span>店舗デザイン・企画・施工・特注家具製作</span>
+      </a>
+      <nav class="nav" id="nav" aria-label="主要メニュー">
+        <a href="index.html#top">TOP</a>
+        <a href="index.html#work">WORK</a>
+        <a class="active" href="index.html#about">ABOUT US</a>
+        <a href="index.html#news">NEWS</a>
+        <a href="index.html#contact">CONTACT</a>
+        <a href="admin.html">ADMIN</a>
+      </nav>
+      <button class="menu-button" type="button" aria-label="メニュー" aria-controls="nav" aria-expanded="false"><span></span></button>
+    </div>
+  </header>
+
+  <main>
+    <section class="page-hero">
+      <div class="container hero-inner">
+        <p class="breadcrumb">ABOUT US / <span id="breadcrumb-title">会社概要</span></p>
+        <p class="label" id="page-label">COMPANY PROFILE</p>
+        <h1 id="page-title">会社概要</h1>
+        <p class="lead" id="page-lead">松屋製作所の基本情報をご紹介します。</p>
+      </div>
+    </section>
+
+    <section class="content">
+      <div class="container layout">
+        <nav class="subnav" id="subnav" aria-label="ABOUT US メニュー"></nav>
+        <article class="panel">
+          <div class="panel-head">
+            <h2 id="content-title">会社概要</h2>
+            <p id="content-lead">商業施設・店舗内装の企画、設計、施工、什器製作まで一貫して行っています。</p>
+          </div>
+          <div class="panel-body" id="page-content"></div>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <img src="assets/logo.png" alt="Matsuya">
+          <p style="margin-top: 18px;">株式会社松屋製作所<br>店舗デザイン・企画・施工・特注家具製作</p>
+        </div>
+        <div>
+          <p class="footer-title">Sitemap</p>
+          <ul>
+            <li><a href="index.html#work">施工事例</a></li>
+            <li><a href="about-detail.html?page=company">会社概要</a></li>
+            <li><a href="about-detail.html?page=philosophy">経営理念</a></li>
+            <li><a href="about-detail.html?page=history">沿革</a></li>
+            <li><a href="about-detail.html?page=recruit">採用情報</a></li>
+            <li><a href="about-detail.html?page=location">所在地</a></li>
+          </ul>
+        </div>
+        <div>
+          <p class="footer-title">Company Office</p>
+          <p>本社オフィス<br>福岡県糟屋郡志免町<br>別府北1丁目14番14号<br>(092) 611-1720</p>
+        </div>
+        <div>
+          <p class="footer-title">Business Hours</p>
+          <p>月曜日ー土曜日<br>9:00am - 5:30pm<br>日曜日 Closed</p>
+        </div>
+      </div>
+      <div class="copyright">Copyright © 2026 株式会社松屋製作所. All Rights Reserved.</div>
+    </div>
+  </footer>
+
+  <script src="site-data.js?v=5"></script>
+  <script>
+    const data = window.MatsuyaContent.loadSiteData();
+    const pages = {
+      company: {
+        label: "COMPANY PROFILE",
+        title: "会社概要",
+        lead: "松屋製作所の基本情報をご紹介します。",
+        bodyLead: "商業施設・店舗内装の企画、設計、施工、什器製作まで一貫して行っています。",
+        type: "table",
+        rows: [
+          ["商号", "株式会社 松屋製作所"],
+          ["代表者", "竹田 博司"],
+          ["創業", "昭和28年1月"],
+          ["設立", "昭和52年1月"],
+          ["資本金", "1,500万円"],
+          ["会社所在地", "〒811-2233 福岡県糟屋郡志免町別府北1丁目14番14号"],
+          ["事業内容", "商業施設・環境企画 / デザイン設計施工 / インテリアの企画施工 / 店舗什器製作 / 住宅関連のリフォーム設計施工"],
+          ["建設業許可", "建設工事業・内装仕上工事業 福岡県知事（般-28）第31004号"]
+        ]
+      },
+      philosophy: {
+        label: "MANAGEMENT PHILOSOPHY",
+        title: "経営理念",
+        lead: "顧客、社員、会社、社会の利益が重なる経営を目指します。",
+        bodyLead: "創業以来大切にしてきた考え方を、読みやすく静かなページに整えました。",
+        type: "philosophy",
+        statement: "我々は、顧客の明日への繁栄を創造する松屋として、仕事を通じ社員の豊かな生活の実現と会社の永続的な繁栄を念願する。",
+        cards: [
+          ["CUSTOMER", "顧客の明日への繁栄を創造する。"],
+          ["PEOPLE", "社員の豊かな生活と人間性の向上を大切にする。"],
+          ["SOCIETY", "経営を通じて幅広く社会に貢献する。"]
+        ]
+      },
+      history: {
+        label: "HISTORY",
+        title: "沿革",
+        lead: "1953年の創業から現在までの歩みです。",
+        bodyLead: "長い歩みを、年表として見やすく整理しました。",
+        type: "timeline",
+        rows: [
+          ["昭和28年01月", "有限会社 松屋製作所 創業"],
+          ["昭和43年01月", "協力業者15社により松栄会 発足"],
+          ["昭和52年01月", "株式会社 松屋製作所 設立 資本金500万円"],
+          ["昭和58年12月", "創立30周年記念式典行事"],
+          ["平成02年09月", "事業拡大のため本社事務所を移転"],
+          ["平成03年01月", "粕屋郡志免町に300坪2階建て工場建設"],
+          ["平成07年07月", "資本金1,500万円に増資"],
+          ["平成13年06月", "本社を総合工場へ増築移転"],
+          ["平成15年02月", "創立50周年記念式典"],
+          ["平成25年06月", "創立60周年記念式典"],
+          ["令和04年11月", "第8回優良申告法人として表敬状を受ける"]
+        ]
+      },
+      recruit: {
+        label: "RECRUIT",
+        title: "採用情報",
+        lead: "松屋製作所の募集要項です。",
+        bodyLead: "ものづくりと空間づくりを支える仲間を募集しています。",
+        type: "recruit",
+        rows: [
+          ["募集職種", "営業・設計、管理、家具製造"],
+          ["給与", "当社規定による（経験考慮）"],
+          ["勤務時間", "8:30 - 17:30"],
+          ["休日休暇", "当社カレンダーによる"],
+          ["待遇", "賞与（年2回）、昇格に伴う昇給（随時）"],
+          ["諸手当", "交通費、住宅手当、家族手当"],
+          ["福利厚生", "健康保険、雇用保険、労災保険、厚生年金、社員旅行、退職金共済"],
+          ["勤務地", "〒811-2233 福岡県糟屋郡志免町別府北1丁目14番14号"]
+        ]
+      },
+      location: {
+        label: "LOCATION",
+        title: "所在地",
+        lead: "本社・工場へのアクセス情報です。",
+        bodyLead: "公共交通機関、お車でお越しの方に向けたアクセス情報をまとめています。",
+        type: "location",
+        rows: [
+          ["郵便番号", "〒811-2233"],
+          ["住所", "福岡県糟屋郡志免町別府北1丁目14-14"],
+          ["電話番号", "092-611-1720"],
+          ["営業時間", "9:00-17:30（月-金）"],
+          ["公共交通機関", "福岡市営地下鉄空港線『福岡空港駅』から徒歩21分 / 西鉄バス『北本町』停留所から徒歩2分"],
+          ["車でお越しの場合", "九州自動車道『須恵スマートインター』から車で13分 / 福岡都市高速3号空港線『空港通』出口から車で10分"]
+        ]
+      }
+    };
+
+    const pageOrder = ["company", "philosophy", "history", "recruit", "location"];
+    const pageLabels = {
+      company: "会社概要",
+      philosophy: "経営理念",
+      history: "沿革",
+      recruit: "採用情報",
+      location: "所在地"
+    };
+    const params = new URLSearchParams(window.location.search);
+    const pageKey = pages[params.get("page")] ? params.get("page") : "company";
+    const page = pages[pageKey];
+
+    document.querySelectorAll(".brand img, .footer-grid img").forEach((img) => {
+      img.src = data.header.logo;
+    });
+    document.querySelector(".brand span").textContent = data.header.tagline;
+    const footerBlocks = document.querySelectorAll(".footer-grid > div");
+    footerBlocks[0].querySelector("p").innerHTML = `${data.footer.company}<br>${data.footer.description}`;
+    footerBlocks[2].querySelector("p:not(.footer-title)").innerHTML = data.footer.office.replace(/\n/g, "<br>");
+    footerBlocks[3].querySelector("p:not(.footer-title)").innerHTML = data.footer.hours.replace(/\n/g, "<br>");
+
+    document.title = `${page.title} | 株式会社松屋製作所`;
+    document.querySelector("#breadcrumb-title").textContent = page.title;
+    document.querySelector("#page-label").textContent = page.label;
+    document.querySelector("#page-title").textContent = page.title;
+    document.querySelector("#page-lead").textContent = page.lead;
+    document.querySelector("#content-title").textContent = page.title;
+    document.querySelector("#content-lead").textContent = page.bodyLead;
+    document.querySelector("#subnav").innerHTML = pageOrder.map((key) => `
+      <a class="${key === pageKey ? "active" : ""}" href="about-detail.html?page=${key}">${pageLabels[key]} <span>></span></a>
+    `).join("");
+
+    function renderRows(rows) {
+      return `<dl class="info-table">${rows.map(([term, desc]) => `
+        <div class="info-row"><dt>${term}</dt><dd>${desc}</dd></div>
+      `).join("")}</dl>`;
+    }
+
+    function renderPage() {
+      if (page.type === "table") return renderRows(page.rows);
+      if (page.type === "philosophy") {
+        return `
+          <p class="statement">${page.statement}</p>
+          <div class="cards">
+            ${page.cards.map(([label, text]) => `<div class="card"><b>${label}</b><p>${text}</p></div>`).join("")}
+          </div>
+        `;
+      }
+      if (page.type === "timeline") {
+        return `<div class="timeline">${page.rows.map(([year, text]) => `
+          <div class="timeline-item"><div class="timeline-year">${year}</div><div class="timeline-text">${text}</div></div>
+        `).join("")}</div>`;
+      }
+      if (page.type === "recruit") {
+        return `
+          <div class="split">
+            <div>${renderRows(page.rows)}</div>
+            <aside class="note">
+              <p class="label">CONTACT</p>
+              <h3>採用に関するお問い合わせ</h3>
+              <p>ご質問等がございましたらお気軽にお問い合わせ下さい。</p>
+              <p><strong>TEL 092-611-1720</strong><br>受付時間 8:30-17:30（月-金）</p>
+              <a class="button" href="mailto:${data.contact.email}">メールで問い合わせる</a>
+            </aside>
+          </div>
+        `;
+      }
+      if (page.type === "location") {
+        return `
+          <div class="split">
+            <div>${renderRows(page.rows)}</div>
+            <div class="map-box">
+              <div>
+                <p class="label">MAP</p>
+                <h3>本社・工場</h3>
+                <p>福岡県糟屋郡志免町別府北1丁目14-14</p>
+                <a class="button" href="https://www.google.com/maps/search/?api=1&query=福岡県糟屋郡志免町別府北1丁目14-14" target="_blank" rel="noopener">Google Mapを開く</a>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+      return "";
+    }
+
+    document.querySelector("#page-content").innerHTML = renderPage();
+
+    const menuButton = document.querySelector(".menu-button");
+    const nav = document.querySelector("#nav");
+    menuButton.addEventListener("click", () => {
+      const isOpen = nav.classList.toggle("open");
+      menuButton.classList.toggle("is-open", isOpen);
+      menuButton.setAttribute("aria-expanded", String(isOpen));
+    });
+  </script>
+</body>
+</html>
