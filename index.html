@@ -193,7 +193,7 @@
     }
 
     .hero-bg.active {
-      opacity: 1;
+      opacity: 0.4;
       transform: scale(1);
     }
 
@@ -404,6 +404,14 @@
       opacity: 0;
       transform: translateY(100%);
       animation: slideUpText 1.6s cubic-bezier(0.25, 1, 0.5, 1) 1.2s forwards;
+    }
+
+    .countup-number {
+      display: inline-block;
+      min-width: 2ch;
+      color: var(--accent);
+      font-variant-numeric: tabular-nums;
+      text-align: right;
     }
 
     .hero-copy {
@@ -1153,6 +1161,8 @@
     let heroTimer = null;
     let heroInitialTimer = null;
     let currentSiteData = null;
+    let heroCountUpTimer = null;
+    const heroCountUpSelector = [".hero h1", ".hero-copy", ".hero-statement", ".eyebrow"];
 
     function startHeroSlideshow(data) {
       const hero = document.querySelector(".hero");
@@ -1220,9 +1230,70 @@
       hero.classList.remove("is-replaying");
     }
 
+    function prepareHeroCountUp() {
+      const targets = heroCountUpSelector
+        .map((selector) => document.querySelector(selector))
+        .filter(Boolean);
+
+      for (const element of targets) {
+        const originalText = element.dataset.countupSource || element.textContent;
+        element.dataset.countupSource = originalText;
+
+        if (!originalText.includes("70")) {
+          element.textContent = originalText;
+          continue;
+        }
+
+        const escaped = originalText
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/\n/g, "<br>");
+
+        element.innerHTML = escaped.replace(
+          "70",
+          '<span class="countup-number" data-target="70" aria-label="70">0</span>'
+        );
+        return;
+      }
+    }
+
+    function startHeroCountUp() {
+      const counter = document.querySelector(".countup-number");
+      if (!counter) return;
+
+      const target = Number(counter.dataset.target || "70");
+      if (heroCountUpTimer) clearTimeout(heroCountUpTimer);
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        counter.textContent = String(target);
+        return;
+      }
+
+      counter.textContent = "0";
+      heroCountUpTimer = setTimeout(() => {
+        const duration = 900;
+        const startTime = performance.now();
+
+        function tick(now) {
+          const progress = Math.min((now - startTime) / duration, 1);
+          const eased = 1 - Math.pow(1 - progress, 3);
+          counter.textContent = String(Math.round(target * eased));
+          if (progress < 1) {
+            requestAnimationFrame(tick);
+          } else {
+            counter.textContent = String(target);
+          }
+        }
+
+        requestAnimationFrame(tick);
+      }, 1200);
+    }
+
     function restartHeroSequence() {
       if (currentSiteData) startHeroSlideshow(currentSiteData);
       replayHeroAnimation();
+      prepareHeroCountUp();
+      startHeroCountUp();
     }
 
     function getNewsDetailHref(item) {
@@ -1250,7 +1321,9 @@
       document.querySelector(".hero-statement").style.display = data.hero.statement ? "" : "none";
       document.querySelector(".hero h1").textContent = formatHeroCopy(data.hero.mainCopy || data.hero.title, "main");
       document.querySelector(".hero-copy").textContent = formatHeroCopy(data.hero.subCopy || data.hero.copy, "sub");
+      prepareHeroCountUp();
       startHeroSlideshow(data);
+      startHeroCountUp();
 
       document.querySelector(".hero-meta").innerHTML = data.meta.map((item) => `
         <div>
@@ -1326,4 +1399,3 @@
   </script>
 </body>
 </html>
-<!-- rebuild -->
